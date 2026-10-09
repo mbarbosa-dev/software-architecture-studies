@@ -1,0 +1,33 @@
+name: Java CI
+
+on:
+  push:
+    branches: [main, estudo/duplicacao]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Obter codigo
+        uses: actions/checkout@v7
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Compilar e executar testes existentes
+        run: mvn --batch-mode --no-transfer-progress clean verify
+
+      - name: Executar exemplo
+        run: java -cp target/classes br.com.portfolio.duplicacao.Main
